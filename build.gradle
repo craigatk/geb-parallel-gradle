@@ -1,0 +1,87 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+repositories {
+  /*maven {
+    name 'Grails Artifactory'
+    url 'http://repo.grails.org/grails/repo'
+  }
+  maven {
+    name 'Spring Source Artifactory'
+    url 'http://repo.springsource.org/repo'
+  }*/
+  mavenLocal()
+  mavenCentral()
+}
+
+String seleniumVersion = "2.35.0"
+
+dependencies {
+  testCompile "org.gebish:geb-spock:0.9.1"
+  testCompile "org.seleniumhq.selenium:selenium-firefox-driver:${seleniumVersion}"
+  testCompile "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+
+  testCompile 'org.codehaus.groovy.modules.remote:remote-transport-http:0.5'
+
+  testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+}
+
+sourceSets {
+  test {
+    groovy {
+      srcDirs = ['test/functional']
+    }
+  }
+}
+
+test {
+  maxParallelForks = 2
+
+  String grailsServerPort = System.getProperty('server.port', '8080')
+
+  systemProperty "geb.build.reportsDir", file("$buildDir/test-results-functional/geb")
+  systemProperty "geb.build.baseUrl", "http://localhost:${grailsServerPort}/geb-parallel-gradle/"
+}
+
+Process grailsRunAppTestProcess
+
+test.doFirst {
+  println "Starting grails app"
+  grailsRunAppTestProcess = execCommandAndWaitForStatusString('grailsw.bat test run-app', 'Server running.')
+}
+
+task shutdownGrails << {
+  if (grailsRunAppTestProcess) {
+    println 'Stopping grails app'
+    grailsRunAppTestProcess.destroy()
+  } else {
+    println "ERROR stopping grails process - process is null"
+  }
+}
+
+test.finalizedBy shutdownGrails
+
+/**
+ * Code taken from Tomas Lin's blog
+ * http://fbflex.wordpress.com/2013/03/14/gradle-madness-execwait-a-task-that-waits-for-commandline-calls-to-be-ready/
+ */
+Process execCommandAndWaitForStatusString(String command, String readyStatusString) {
+  ProcessBuilder builder = new ProcessBuilder(command.split(' '))
+  builder.redirectErrorStream(true)
+  builder.directory(new File("."))
+  Process process = builder.start()
+
+  InputStream processStdout = process.getInputStream()
+  BufferedReader reader = new BufferedReader(new InputStreamReader(processStdout))
+
+  def line
+  while ((line = reader.readLine()) != null) {
+    println line
+    if (line.contains(readyStatusString)) {
+      println "'${command}' is ready"
+      break;
+    }
+  }
+
+  return process
+}
