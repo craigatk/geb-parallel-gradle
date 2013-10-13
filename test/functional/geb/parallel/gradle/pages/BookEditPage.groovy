@@ -19,7 +19,9 @@ class BookEditPage extends geb.Page {
   }
 
   BookListPage deleteBook() {
-    deleteButton.click()
+    withConfirm(true) {
+      deleteButton.click()
+    }
 
     return browser.page
   }

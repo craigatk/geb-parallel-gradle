@@ -2,14 +2,6 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 repositories {
-  /*maven {
-    name 'Grails Artifactory'
-    url 'http://repo.grails.org/grails/repo'
-  }
-  maven {
-    name 'Spring Source Artifactory'
-    url 'http://repo.springsource.org/repo'
-  }*/
   mavenLocal()
   mavenCentral()
 }
@@ -35,6 +27,7 @@ sourceSets {
 }
 
 test {
+  outputs.upToDateWhen { false }
   maxParallelForks = 2
 
   String grailsServerPort = System.getProperty('server.port', '8080')
@@ -43,26 +36,23 @@ test {
   systemProperty "geb.build.baseUrl", "http://localhost:${grailsServerPort}/geb-parallel-gradle/"
 }
 
-Process grailsRunAppTestProcess
-
 test.doFirst {
+  // Using the Grails wrapper to start the Grails application in the 'test' environment so the remote control
+  // plugin is enabled and my remote util bean is injected from resources.groovy
   println "Starting grails app"
-  grailsRunAppTestProcess = execCommandAndWaitForStatusString('grailsw.bat test run-app', 'Server running.')
+  execCommandAndWaitForStatusString("grailsw.bat test run-app", 'Server running.')
 }
 
-task shutdownGrails << {
-  if (grailsRunAppTestProcess) {
-    println 'Stopping grails app'
-    grailsRunAppTestProcess.destroy()
-  } else {
-    println "ERROR stopping grails process - process is null"
-  }
+task stopGrails << {
+  // Grails will shut down when it sees a file called ".kill-run-app"
+  // See http://stackoverflow.com/a/4665331
+  new File(".kill-run-app").text = ""
 }
 
-test.finalizedBy shutdownGrails
+test.finalizedBy stopGrails
 
 /**
- * Code taken from Tomas Lin's blog
+ * Credit for this method goes to Tomas Lin
  * http://fbflex.wordpress.com/2013/03/14/gradle-madness-execwait-a-task-that-waits-for-commandline-calls-to-be-ready/
  */
 Process execCommandAndWaitForStatusString(String command, String readyStatusString) {

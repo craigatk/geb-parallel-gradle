@@ -11,7 +11,6 @@ class BookRemoteUtil {
     return newBook.id
   }
 
-
   Long findByTitle(String title) {
     Book.findByTitle(title)?.id
   }
