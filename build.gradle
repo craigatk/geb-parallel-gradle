@@ -26,6 +26,10 @@ sourceSets {
   }
 }
 
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.8'
+}
+
 test {
   // Disable Gradle's up-to-date checking so it always runs the tests, even if I didn't update any test files
   outputs.upToDateWhen { false }
