@@ -27,7 +27,9 @@ sourceSets {
 }
 
 test {
+  // Disable Gradle's up-to-date checking so it always runs the tests, even if I didn't update any test files
   outputs.upToDateWhen { false }
+
   maxParallelForks = 2
 
   String grailsServerPort = System.getProperty('server.port', '8080')

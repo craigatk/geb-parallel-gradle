@@ -5,6 +5,12 @@ import groovyx.remote.client.RemoteControl
 class AuthorRemoteControl {
   RemoteControl remote = new AppRemoteControl()
 
+  Long createAuthor(String firstName, String lastName) {
+    remote {
+      ctx.authorRemoteUtil.createAuthor(firstName, lastName)
+    }
+  }
+
   boolean authorExists(String lastName) {
     return (findIdByLastName(lastName) > 0)
   }
