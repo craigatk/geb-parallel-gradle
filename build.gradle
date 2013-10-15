@@ -11,6 +11,8 @@ repositories {
 String seleniumVersion = "2.35.0"
 
 dependencies {
+  testCompile "org.codehaus.groovy:groovy-all:2.0.8"
+
   testCompile "org.gebish:geb-spock:0.9.1"
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:${seleniumVersion}"
   testCompile "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
@@ -44,6 +46,8 @@ test {
   systemProperty "geb.build.baseUrl", "http://localhost:${grailsServerPort}/geb-parallel-gradle/"
 }
 
+Process grailsTestAppProcess
+
 test.doFirst {
   // Using the Grails wrapper to start the Grails application in the 'test' environment so the remote control
   // plugin is enabled and my remote util bean is injected from resources.groovy
@@ -57,13 +61,15 @@ test.doFirst {
     grailsRunAppCommand = "./grailsw test run-app"
   }
 
-  execCommandAndWaitForStatusString(grailsRunAppCommand, 'Server running.')
+  grailsTestAppProcess = execCommandAndWaitForStatusString(grailsRunAppCommand, 'Server running.')
 }
 
 task stopGrails << {
   // Grails will shut down when it sees a file called ".kill-run-app"
   // See http://stackoverflow.com/a/4665331
   new File(".kill-run-app").text = ""
+
+  grailsTestAppProcess.waitFor()
 }
 
 test.finalizedBy stopGrails
@@ -89,6 +95,8 @@ Process execCommandAndWaitForStatusString(String command, String readyStatusStri
       break;
     }
   }
+
+  process.consumeProcessOutput(System.out, System.err)
 
   return process
 }
