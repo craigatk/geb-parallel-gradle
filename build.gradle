@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'java'
 apply plugin: 'groovy'
 
@@ -46,7 +48,16 @@ test.doFirst {
   // Using the Grails wrapper to start the Grails application in the 'test' environment so the remote control
   // plugin is enabled and my remote util bean is injected from resources.groovy
   println "Starting grails app"
-  execCommandAndWaitForStatusString("grailsw.bat test run-app", 'Server running.')
+
+  String grailsRunAppCommand
+
+  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    grailsRunAppCommand = "grailsw.bat test run-app"
+  } else {
+    grailsRunAppCommand = "./grailsw test run-app"
+  }
+
+  execCommandAndWaitForStatusString(grailsRunAppCommand, 'Server running.')
 }
 
 task stopGrails << {
