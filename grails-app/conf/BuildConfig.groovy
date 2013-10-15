@@ -64,6 +64,8 @@ grails.project.dependency.resolution = {
 
     compile ':cache:1.0.1'
 
+    compile ":github-gist:0.2"
+
     test ":remote-control:1.4"
     test ":geb:${gebVersion}"
     test(":spock:0.7") {

@@ -8,6 +8,8 @@ repositories {
   mavenCentral()
 }
 
+
+// <gist id="6999603">
 String seleniumVersion = "2.35.0"
 
 dependencies {
@@ -29,11 +31,13 @@ sourceSets {
     }
   }
 }
+// </gist>
 
 task wrapper(type: Wrapper) {
   gradleVersion = '1.8'
 }
 
+// <gist id="6999604">
 test {
   // Disable Gradle's up-to-date checking so it always runs the tests, even if I didn't update any test files
   outputs.upToDateWhen { false }
@@ -45,7 +49,9 @@ test {
   systemProperty "geb.build.reportsDir", file("$buildDir/test-results-functional/geb")
   systemProperty "geb.build.baseUrl", "http://localhost:${grailsServerPort}/geb-parallel-gradle/"
 }
+// </gist>
 
+// <gist id="6999605">
 Process grailsTestAppProcess
 
 test.doFirst {
@@ -64,18 +70,8 @@ test.doFirst {
   grailsTestAppProcess = execCommandAndWaitForStatusString(grailsRunAppCommand, 'Server running.')
 }
 
-task stopGrails << {
-  // Grails will shut down when it sees a file called ".kill-run-app"
-  // See http://stackoverflow.com/a/4665331
-  new File(".kill-run-app").text = ""
-
-  grailsTestAppProcess.waitFor()
-}
-
-test.finalizedBy stopGrails
-
 /**
- * Credit for this method goes to Tomas Lin
+ * Credit for this method goes to Tomas Lin - adapted from his blog
  * http://fbflex.wordpress.com/2013/03/14/gradle-madness-execwait-a-task-that-waits-for-commandline-calls-to-be-ready/
  */
 Process execCommandAndWaitForStatusString(String command, String readyStatusString) {
@@ -100,3 +96,16 @@ Process execCommandAndWaitForStatusString(String command, String readyStatusStri
 
   return process
 }
+// </gist>
+
+// <gist id="6999606">
+task stopGrails << {
+  // Grails will shut down when it sees a file called ".kill-run-app"
+  // See http://stackoverflow.com/a/4665331
+  new File(".kill-run-app").text = ""
+
+  grailsTestAppProcess.waitFor()
+}
+
+test.finalizedBy stopGrails
+// </gist>

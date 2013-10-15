@@ -1,11 +1,9 @@
 package geb.parallel.gradle.remote
 
-import groovyx.remote.client.RemoteControl
-import groovyx.remote.transport.http.HttpTransport
-
-class AppRemoteControl extends RemoteControl {
+// <gist id="6999634">
+class AppRemoteControl extends groovyx.remote.client.RemoteControl {
   AppRemoteControl() {
-    super(new HttpTransport(getRemoteControlUrl()))
+    super(new groovyx.remote.transport.http.HttpTransport(getRemoteControlUrl()))
   }
 
   static String getRemoteControlUrl() {
@@ -14,3 +12,4 @@ class AppRemoteControl extends RemoteControl {
     return "http://localhost:${port}/geb-parallel-gradle/grails-remote-control"
   }
 }
+// </gist>
