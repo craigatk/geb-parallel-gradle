@@ -10,18 +10,18 @@ repositories {
 
 
 // <gist id="6999603">
-String seleniumVersion = "2.35.0"
+String seleniumVersion = "2.45.0"
 
 dependencies {
-  testCompile "org.codehaus.groovy:groovy-all:2.0.8"
+  testCompile "org.codehaus.groovy:groovy-all:2.3.6"
 
-  testCompile "org.gebish:geb-spock:0.9.1"
+  testCompile "org.gebish:geb-spock:0.10.0"
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:${seleniumVersion}"
   testCompile "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
 
   testCompile 'org.codehaus.groovy.modules.remote:remote-transport-http:0.5'
 
-  testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+  testCompile "org.spockframework:spock-core:1.0-groovy-2.3"
 }
 
 sourceSets {
@@ -34,7 +34,7 @@ sourceSets {
 // </gist>
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '1.8'
+  gradleVersion = '2.4'
 }
 
 // <gist id="6999604">
