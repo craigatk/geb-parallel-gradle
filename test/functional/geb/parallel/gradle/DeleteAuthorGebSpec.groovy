@@ -3,14 +3,13 @@ package geb.parallel.gradle
 import geb.parallel.gradle.pages.AuthorEditPage
 import geb.parallel.gradle.remote.AuthorRemoteControl
 import geb.spock.GebReportingSpec
+import spock.lang.Unroll
 
 class DeleteAuthorGebSpec extends GebReportingSpec {
+  @Unroll
   def 'should delete existing author'() {
     given:
     AuthorRemoteControl authorRemoteControl = new AuthorRemoteControl()
-
-    String firstName = "Richard"
-    String lastName = "Castle"
 
     Long authorId = authorRemoteControl.createAuthor(firstName, lastName)
 
@@ -21,5 +20,13 @@ class DeleteAuthorGebSpec extends GebReportingSpec {
 
     then:
     assert !authorRemoteControl.authorExists(lastName)
+
+    where:
+    firstName | lastName
+    "Richard" | "Castle"
+    "Author"  | "Remove1"
+    "Author"  | "Remove2"
+    "Author"  | "Remove3"
+    "Author"  | "Remove4"
   }
 }

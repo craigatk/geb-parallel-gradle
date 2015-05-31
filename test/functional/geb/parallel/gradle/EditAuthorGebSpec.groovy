@@ -4,18 +4,16 @@ import geb.parallel.gradle.pages.AuthorEditPage
 import geb.parallel.gradle.pages.AuthorShowPage
 import geb.parallel.gradle.remote.AuthorRemoteControl
 import geb.spock.GebReportingSpec
+import spock.lang.Unroll
 
 class EditAuthorGebSpec extends GebReportingSpec {
+
+  @Unroll
   def 'should edit existing author'() {
     given:
     AuthorRemoteControl authorRemoteControl = new AuthorRemoteControl()
 
-    String oldFirstName = "Isaacc"
-    String lastName = "Asimov"
-
     Long authorId = authorRemoteControl.createAuthor(oldFirstName, lastName)
-
-    String newFirstName = "Isaac"
 
     AuthorEditPage authorEditPage = to AuthorEditPage, authorId
 
@@ -27,5 +25,12 @@ class EditAuthorGebSpec extends GebReportingSpec {
 
     and:
     assert authorRemoteControl.findFirstName(lastName) == newFirstName
+
+    where:
+    oldFirstName | lastName | newFirstName
+    "Old1"       | "Last1"  | "New1"
+    "Old2"       | "Last2"  | "New2"
+    "Old3"       | "Last3"  | "New3"
+    "Old4"       | "Last4"  | "New4"
   }
 }

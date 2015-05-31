@@ -4,16 +4,15 @@ import geb.parallel.gradle.pages.AuthorCreatePage
 import geb.parallel.gradle.pages.AuthorShowPage
 import geb.parallel.gradle.remote.AuthorRemoteControl
 import geb.spock.GebReportingSpec
+import spock.lang.Unroll
 
 class CreateAuthorGebSpec extends GebReportingSpec {
-  def 'should create author'() {
+  @Unroll
+  def 'should create authors'() {
     given:
     AuthorRemoteControl authorRemoteControl = new AuthorRemoteControl()
 
     AuthorCreatePage authorCreatePage = to(AuthorCreatePage)
-
-    String firstName = "George"
-    String lastName = "Orwell"
 
     when:
     AuthorShowPage authorShowPage = authorCreatePage.createAuthor(firstName, lastName)
@@ -25,5 +24,11 @@ class CreateAuthorGebSpec extends GebReportingSpec {
     and:
     assert authorRemoteControl.authorExists(lastName)
     assert authorRemoteControl.findFirstName(lastName) == firstName
+
+    where:
+    firstName | lastName
+    "George"  | "Orwell"
+    "John"    | "Grisham"
+    "Stephen" | "King"
   }
 }
