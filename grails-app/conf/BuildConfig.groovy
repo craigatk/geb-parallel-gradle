@@ -11,8 +11,8 @@ grails.project.source.level = 1.6
 //   run: [maxMemory:1024, minMemory:64, debug:false, maxPerm:256]
 //]
 
-def gebVersion = "0.9.1"
-def webdriverVersion = "2.35.0"
+def gebVersion = "0.10.0"
+def webdriverVersion = "2.46.0"
 
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
@@ -50,26 +50,26 @@ grails.project.dependency.resolution = {
     test "org.seleniumhq.selenium:selenium-chrome-driver:${webdriverVersion}"
     test "org.seleniumhq.selenium:selenium-firefox-driver:${webdriverVersion}"
 
-    test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
+    test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
   }
 
   plugins {
-    runtime ":hibernate:$grailsVersion"
-    runtime ":jquery:1.8.3"
-    runtime ":resources:1.2"
+    // plugins for the build system only
+    build ":tomcat:7.0.55"
 
-    build ":tomcat:$grailsVersion"
+    // plugins for the compile step
+    compile ":scaffolding:2.1.2"
+    compile ':cache:1.1.8'
 
-    runtime ":database-migration:1.3.2"
+    // plugins needed at runtime but not for compilation
+    runtime ":hibernate4:4.3.6.1" // or ":hibernate:3.6.10.18"
+    runtime ":database-migration:1.4.0"
 
-    compile ':cache:1.0.1'
+    compile ":asset-pipeline:2.3.8"
+
+    test ":remote-control:1.5"
+    test ":geb:${gebVersion}"
 
     compile ":github-gist:0.2"
-
-    test ":remote-control:1.4"
-    test ":geb:${gebVersion}"
-    test(":spock:0.7") {
-      exclude "spock-grails-support"
-    }
   }
 }
