@@ -70,6 +70,6 @@ grails.project.dependency.resolution = {
     test ":remote-control:1.5"
     test ":geb:${gebVersion}"
 
-    compile ":github-gist:0.2"
+    //compile ":github-gist:0.2"
   }
 }
