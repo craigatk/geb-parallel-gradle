@@ -10,7 +10,7 @@ repositories {
 
 
 // <gist id="6999603">
-String seleniumVersion = "2.45.0"
+String seleniumVersion = "2.46.0"
 
 dependencies {
   testCompile "org.codehaus.groovy:groovy-all:2.3.6"
